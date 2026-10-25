@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+tasks.register('runAllTests') {
+    group = 'verification'
+    description = 'Запускает все тесты в проекте'
+    dependsOn test
+}
+
+tasks.register('printTestRunOver') {
+    group = 'verification'
+    description = 'Пишет в консоль Test run is over'
+    doLast {
+        println 'Test run is over'
+    }
+}
+
+runAllTests.finalizedBy printTestRunOver
