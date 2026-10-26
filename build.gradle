@@ -33,3 +33,16 @@ tasks.register('printTestRunOver') {
 }
 
 runAllTests.finalizedBy printTestRunOver
+
+tasks.register('homeworkTests', Test) {
+    group = 'verification'
+    description = 'Запускает только тесты с тегом homework'
+    useJUnitPlatform {
+        includeTags 'homework'
+    }
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    testLogging {
+        showStandardStreams = true
+    }
+}

@@ -1,1 +1,0 @@
-rootProject.name = "gradle-junit-homework-2"
