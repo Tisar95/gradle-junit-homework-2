@@ -9,12 +9,23 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.assertj:assertj-core:3.26.3'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty 'file.encoding', 'UTF-8'
+    systemProperty 'sun.jnu.encoding', 'UTF-8'
 }
 
 test {
     useJUnitPlatform()
     testLogging {
         showStandardStreams = true
+        exceptionFormat = 'full'
     }
 }
 
@@ -44,5 +55,20 @@ tasks.register('homeworkTests', Test) {
     classpath = sourceSets.test.runtimeClasspath
     testLogging {
         showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.register('lectureTests', Test) {
+    group = 'verification'
+    description = 'Запускает тесты лекции (включая намеренно падающий)'
+    useJUnitPlatform {
+        includeTags 'lecture'
+    }
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
     }
 }

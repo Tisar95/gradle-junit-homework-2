@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import static homework.Main.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 @Tag("homework")
 public class HomeworkTest {
@@ -19,7 +21,9 @@ public class HomeworkTest {
         int n = random.nextInt(100) + 1;
         boolean actual = isEven(n);
         boolean expected = (n % 2 == 0);
-        printResult("isEven(" + n + ")", expected, actual);
+        assertThat(actual)
+                .as("isEven(%d): expected %s, but was %s", n, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -27,7 +31,9 @@ public class HomeworkTest {
         int age = random.nextInt(100);
         String actual = checkAccess(age);
         String expected = age > 18 ? "Allowed" : "Denied";
-        printResult("checkAccess(" + age + ")", expected, actual);
+        assertThat(actual)
+                .as("checkAccess(%d): expected \"%s\", but was \"%s\"", age, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -35,7 +41,9 @@ public class HomeworkTest {
         int n = random.nextInt(200) - 100;
         boolean actual = isPositive(n);
         boolean expected = n >= 0;
-        printResult("isPositive(" + n + ")", expected, actual);
+        assertThat(actual)
+                .as("isPositive(%d): expected %s, but was %s", n, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -43,7 +51,9 @@ public class HomeworkTest {
         int score = random.nextInt(101);
         String actual = getGrade(score);
         String expected = score <= 20 ? "E" : score <= 40 ? "D" : score <= 60 ? "C" : score <= 80 ? "B" : "A";
-        printResult("getGrade(" + score + ")", expected, actual);
+        assertThat(actual)
+                .as("getGrade(%d): expected \"%s\", but was \"%s\"", score, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -54,7 +64,9 @@ public class HomeworkTest {
         sb.append("Поехали!");
         String expected = sb.toString();
         String actual = blastOff(start);
-        printResult("blastOff(" + start + ")", expected, actual);
+        assertThat(actual)
+                .as("blastOff(%d): expected \"%s\", but was \"%s\"", start, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -62,7 +74,9 @@ public class HomeworkTest {
         int n = random.nextInt(100) + 1;
         int expected = n * (n + 1) / 2;
         int actual = sumToN(n);
-        printResult("sumToN(" + n + ")", expected, actual);
+        assertThat(actual)
+                .as("sumToN(%d): expected %d, but was %d", n, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -70,7 +84,10 @@ public class HomeworkTest {
         boolean expected = random.nextBoolean();
         String[] messages = expected ? new String[]{"ok", "BUG"} : new String[]{"ok", "info"};
         boolean actual = hasBug(messages);
-        printResult("hasBug(" + java.util.Arrays.toString(messages) + ")", expected, actual);
+        assertThat(actual)
+                .as("hasBug(%s): expected %s, but was %s",
+                        java.util.Arrays.toString(messages), expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -86,7 +103,10 @@ public class HomeworkTest {
         }
         String expected = sb.toString();
         String actual = getEvenInRange(start, end);
-        printResult("getEvenInRange(" + start + ", " + end + ")", expected, actual);
+        assertThat(actual)
+                .as("getEvenInRange(%d, %d): expected \"%s\", but was \"%s\"",
+                        start, end, expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -94,7 +114,10 @@ public class HomeworkTest {
         int[] arr = random.ints(5, -50, 50).toArray();
         int expected = java.util.Arrays.stream(arr).max().getAsInt();
         int actual = findMax(arr);
-        printResult("findMax(" + java.util.Arrays.toString(arr) + ")", expected, actual);
+        assertThat(actual)
+                .as("findMax(%s): expected %d, but was %d",
+                        java.util.Arrays.toString(arr), expected, actual)
+                .isEqualTo(expected);
     }
 
     @RepeatedTest(10)
@@ -104,9 +127,13 @@ public class HomeworkTest {
         for (int i = 0; i < len; i++) arr[i] = "s" + random.nextInt(100);
         String[] expected = new String[len];
         for (int i = 0; i < len; i++) expected[i] = arr[len - 1 - i];
-        String actual = java.util.Arrays.toString(reverse(arr));
-        String exp = java.util.Arrays.toString(expected);
-        printResult("reverse(" + java.util.Arrays.toString(arr) + ")", exp, actual);
+        String[] actual = reverse(arr);
+        assertThat(actual)
+                .as("reverse(%s): expected %s, but was %s",
+                        java.util.Arrays.toString(arr),
+                        java.util.Arrays.toString(expected),
+                        java.util.Arrays.toString(actual))
+                .containsExactly(expected);
     }
 
     @RepeatedTest(10)
@@ -116,8 +143,9 @@ public class HomeworkTest {
         for (int i = 0; i < size; i++) list.add(random.nextInt(100));
         double expected = list.stream().mapToInt(Integer::intValue).average().orElse(0.0);
         double actual = calcAverage(list);
-        boolean ok = Math.abs(expected - actual) < 0.0001;
-        System.out.println("calcAverage(" + list + ") => " + (ok ? "TEST PASSED" : "TEST FAILED"));
+        assertThat(actual)
+                .as("calcAverage(%s): expected %.4f, but was %.4f", list, expected, actual)
+                .isCloseTo(expected, within(0.0001));
     }
 
     @RepeatedTest(10)
@@ -127,14 +155,9 @@ public class HomeworkTest {
         List<String> expected = new ArrayList<>();
         for (String n : source) if (!n.equals(toRemove)) expected.add(n);
         List<String> actual = removeSpecificName(source, toRemove);
-        printResult("removeSpecificName(" + source + ", " + toRemove + ")", expected, actual);
-    }
-
-    private void printResult(String caseName, Object expected, Object actual) {
-        if (String.valueOf(expected).equals(String.valueOf(actual))) {
-            System.out.println(caseName + " => TEST PASSED");
-        } else {
-            System.out.println(caseName + " => TEST FAILED: ожидалось " + expected + ", получено " + actual);
-        }
+        assertThat(actual)
+                .as("removeSpecificName(%s, \"%s\"): expected %s, but was %s",
+                        source, toRemove, expected, actual)
+                .isEqualTo(expected);
     }
 }
