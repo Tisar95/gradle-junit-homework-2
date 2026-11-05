@@ -10,15 +10,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.assertj:assertj-core:3.26.3'
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-tasks.withType(Test).configureEach {
-    systemProperty 'file.encoding', 'UTF-8'
-    systemProperty 'sun.jnu.encoding', 'UTF-8'
+    implementation 'io.rest-assured:rest-assured:5.4.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
 }
 
 test {
@@ -29,41 +22,11 @@ test {
     }
 }
 
-tasks.register('runAllTests') {
+tasks.register('apiTests', Test) {
     group = 'verification'
-    description = 'Запускает все тесты в проекте'
-    dependsOn test
-}
-
-tasks.register('printTestRunOver') {
-    group = 'verification'
-    description = 'Пишет в консоль Test run is over'
-    doLast {
-        println 'Test run is over'
-    }
-}
-
-runAllTests.finalizedBy printTestRunOver
-
-tasks.register('homeworkTests', Test) {
-    group = 'verification'
-    description = 'Запускает только тесты с тегом homework'
+    description = 'Запускает только API-тесты'
     useJUnitPlatform {
-        includeTags 'homework'
-    }
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-    testLogging {
-        showStandardStreams = true
-        exceptionFormat = 'full'
-    }
-}
-
-tasks.register('lectureTests', Test) {
-    group = 'verification'
-    description = 'Запускает тесты лекции (включая намеренно падающий)'
-    useJUnitPlatform {
-        includeTags 'lecture'
+        includeTags 'api'
     }
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
