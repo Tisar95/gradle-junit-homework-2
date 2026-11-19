@@ -12,26 +12,27 @@ dependencies {
     implementation 'org.assertj:assertj-core:3.26.3'
     implementation 'io.rest-assured:rest-assured:5.4.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.13'
+
+    // Selenium и Selenide
+    implementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+    implementation 'com.codeborne:selenide:7.2.3'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
 test {
     useJUnitPlatform()
     testLogging {
         showStandardStreams = true
-        exceptionFormat = 'full'
     }
 }
 
 tasks.register('apiTests', Test) {
-    group = 'verification'
-    description = 'Запускает только API-тесты'
-    useJUnitPlatform {
-        includeTags 'api'
-    }
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-    testLogging {
-        showStandardStreams = true
-        exceptionFormat = 'full'
-    }
+    useJUnitPlatform { includeTags 'api' }
+}
+
+// Задача для запуска UI тестов
+tasks.register('uiTests', Test) {
+    useJUnitPlatform { includeTags 'ui' }
+    testLogging { showStandardStreams = true }
 }
